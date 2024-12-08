@@ -4,7 +4,9 @@ import com.infracloud.url_shortener.urlShort.storage.UrlStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -39,6 +41,13 @@ public class UrlShortenerService {
 
     public String redirectURL(String shortened) {
         return urlStorage.getOriginalUrl(shortened);
+    }
+
+    public Map<String, Integer> getTopDomains() {
+         return urlStorage.getTopDomains().entrySet().stream()
+                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                 .limit(3)
+                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private String randomAlphaNumericWord() {

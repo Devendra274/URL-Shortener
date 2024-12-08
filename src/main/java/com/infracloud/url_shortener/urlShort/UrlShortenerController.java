@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +24,8 @@ public class UrlShortenerController {
     private final UrlShortenerService urlService;
 
     @PostMapping("/shorten")
-    public ResponseEntity<Object> createShortUrl(@RequestBody String url, HttpServletRequest request) {
+    public ResponseEntity<Object> createShortUrl(@RequestBody Map<String, String> urlBody, HttpServletRequest request) {
+        var url = urlBody.get("url");
         validateUrl(url);
         String baseUrl = getBaseUrl(request);
         String shortUrl;
@@ -35,6 +37,11 @@ public class UrlShortenerController {
     public ResponseEntity<Void> redirect(@PathVariable String shortened) {
         String originalUrl = urlService.redirectURL(shortened);
         return ResponseEntity.status(302).header("Location", originalUrl).build();
+    }
+
+    @GetMapping("/metrics")
+    public ResponseEntity<Map<String, Integer>> getMetrics() {
+        return ResponseEntity.ok(urlService.getTopDomains());
     }
 
     private void validateUrl(String url) {
