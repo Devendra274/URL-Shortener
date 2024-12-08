@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
-import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,20 +24,32 @@ public class UrlShortenerController {
 
     @PostMapping("/shorten")
     public ResponseEntity<Object> createShortUrl(@RequestBody String url, HttpServletRequest request) {
+        validateUrl(url);
+        String baseUrl = getBaseUrl(request);
+        String shortUrl;
+        shortUrl = urlService.createShortUrl(url, baseUrl);
+        return new ResponseEntity<>(shortUrl, HttpStatus.OK);
+    }
 
+    @GetMapping("/redirect/{shortened}")
+    public ResponseEntity<Void> redirect(@PathVariable String shortened) {
+        String originalUrl = urlService.redirectURL(shortened);
+        return ResponseEntity.status(302).header("Location", originalUrl).build();
+    }
+
+    private void validateUrl(String url) {
         // Validation checks for supplied URL
         var validator = new UrlValidator(
                 new String[]{"http", "https"}
         );
         if (!validator.isValid(url)) {
             log.error("Malformed Url provided");
-            var error = new InvalidUrlException("Invalid URL: " + url);
-
-            // returns a custom body with error message and bad request status code
-            return ResponseEntity.badRequest().body(error);
+            throw new InvalidUrlException("Invalid URL: " + url);
         }
-        String baseUrl;
+    }
 
+    private String getBaseUrl(HttpServletRequest request) {
+        String baseUrl;
         try {
             log.debug("Request:: " + request.getRequestURL().toString());
             baseUrl = UrlUtil.getBaseUrl(request.getRequestURL().toString());
@@ -46,14 +57,6 @@ public class UrlShortenerController {
             log.error("Malformed request url");
             throw new UrlShortenerException("Request url is invalid: " + e);
         }
-        String shortUrl;
-        var hash = urlService.checkUrlAlreadyExistsInMemory(url);
-        // Retrieving the hash and concat with protocol://domain:port
-        if(Objects.nonNull(hash))
-            shortUrl = baseUrl.concat(hash);
-        else
-            shortUrl = baseUrl.concat(urlService.createShortUrl(url));
-
-        return new ResponseEntity<>(shortUrl, HttpStatus.OK);
+        return baseUrl;
     }
 }

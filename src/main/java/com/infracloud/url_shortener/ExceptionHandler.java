@@ -12,7 +12,7 @@ import javax.print.DocFlavor;
 public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(value = InvalidUrlException.class)
     public ResponseEntity<String> handleException(InvalidUrlException ex) {
-        return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = UrlShortenerException.class)

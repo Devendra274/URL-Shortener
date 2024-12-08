@@ -16,9 +16,16 @@ public class UrlShortenerService {
     private static final int SHORT_URL_LENGTH = 7;
     private final UrlStorage urlStorage;
 
-    public String createShortUrl(String originalUrl) {
-        createShortUrlInMemory(originalUrl);
-        return urlStorage.getShortenedUrl(originalUrl);
+    public String createShortUrl(String originalUrl, String baseUrl) {
+        var hash = checkUrlAlreadyExistsInMemory(originalUrl);
+        // Retrieving the hash and concat with protocol://domain:port
+        if(Objects.nonNull(hash)) {
+            return baseUrl.concat(hash);
+        }
+        else {
+            createShortUrlInMemory(originalUrl);
+            return baseUrl.concat(urlStorage.getShortenedUrl(originalUrl));
+        }
     }
 
     public void createShortUrlInMemory(String originalUrl) {
@@ -26,9 +33,12 @@ public class UrlShortenerService {
         urlStorage.storeUrl(originalUrl, hash);
     }
 
-
     public String checkUrlAlreadyExistsInMemory(String originalUrl) {
         return urlStorage.getShortenedUrl(originalUrl);
+    }
+
+    public String redirectURL(String shortened) {
+        return urlStorage.getOriginalUrl(shortened);
     }
 
     private String randomAlphaNumericWord() {
