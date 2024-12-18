@@ -35,7 +35,7 @@ docker push devendra274/url-shortener:v2
 You can download the image and run it on your system
 ```shell
 docker pull devendra274/url-shortener:v2
-docker run -d -p 8080:8080 --name url-shortener devendra274/url-shortener:v2
+docker run -d -p 8080:8080 devendra274/url-shortener:v2
 docker ps
 ```
 The application will be accessible on http://localhost:8080

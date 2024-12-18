@@ -4,7 +4,9 @@ WORKDIR /app
 
 # Clone repo
 ARG REPO_URL=https://github.com/Devendra274/URL-Shortener.git
-RUN git clone ${REPO_URL} .
+RUN apt-get update && apt-get install -y git \
+    && git clone ${REPO_URL} . \
+    && rm -rf /var/lib/apt/lists/*
 
 # Build the application and generate JAR file
 RUN mvn clean package -DskipTests
