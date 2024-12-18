@@ -23,7 +23,7 @@ class UrlShortenerServiceTest {
     @MethodSource
     void test_createShortUrl(String originalUrl) {
         //Given
-        int port = 8090;
+        int port = 8080;
         String baseUrl="http://localhost/";
 
         //When
