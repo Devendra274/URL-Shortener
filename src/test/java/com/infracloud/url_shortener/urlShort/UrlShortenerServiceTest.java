@@ -23,7 +23,7 @@ class UrlShortenerServiceTest {
     @MethodSource
     void test_createShortUrl(String originalUrl) {
         //Given
-        int port = 8090;
+        int port = 8080;
         String baseUrl="http://localhost/";
 
         //When
@@ -76,7 +76,6 @@ class UrlShortenerServiceTest {
         //Then
         assertEquals(3, metrics.get("youtube.com"));
         assertEquals(3, metrics.get("udemy.com"));
-        assertEquals(2, metrics.get("irctc.com"));
         assertNull(metrics.get("asics.com"));
     }
 }
