@@ -31,7 +31,7 @@ class UrlShortenerControllerTest {
     @Test
     void test_createShortUrl() {
         //Given
-        var local = "http://localhost/";
+        var local = "localhost/";
         var originalUrl = "http://example.com";
         var urlBody = new HashMap<String, String>();
         urlBody.put("url", originalUrl);
@@ -40,7 +40,7 @@ class UrlShortenerControllerTest {
         request.setLocalPort(8090);
 
         //When
-        when(urlShortenerService.createShortUrl(originalUrl, local)).thenReturn(local+"a74XeT2");
+        when(urlShortenerService.createShortUrl(originalUrl, request.getRequestURL().toString())).thenReturn(local+"a74XeT2");
         var response = urlShortenerController.createShortUrl(urlBody, request);
 
         assertNotNull(response);

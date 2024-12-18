@@ -1,5 +1,5 @@
 # URL Shortener
-Spring Boot based REST API that takes a URL and returns a shortened URL.
+Spring Boot based REST API that takes a URL and returns a shortened URL and uses MySQL to persist data.
 
 # Getting Started
 ## Dependencies
@@ -17,12 +17,14 @@ git clone https://github.com/Devendra274/URL-Shortener.git
 cd url-shortener
 mvn clean install
 ```
+The jar will be generated under target folder 
 
-## Deployment
+## Docker Deployment
 Project image can be generated using Dockerfile. To create docker image:
 ```shell
 docker build -t urlshortener_dev:v1 .
 ```
+
 To push image to dockerhub
 ```shell
 docer login
